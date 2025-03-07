@@ -1,67 +1,54 @@
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 
-# Tokenizing:
+# Download stopwords if needed
+nltk.download('punkt')
+nltk.download('stopwords')
 
-news_sample = pd.read_csv('clean_news_sample.csv')
-# print(news_sample['content'])
+# Tokenizer function
+def tokenizer(df):
+    stop_words = set(stopwords.words('english'))
+    stemmer = PorterStemmer()
 
-# print(list(set(news_sample['type'])))
+    tokens = set()
 
-content_example = news_sample['content'].iloc[0]
-print('Number of tokens in content[0]:', len(content_example))
+    # Tokenizing each content
+    for content in df['content'].dropna():
+        tokens.update(nltk.word_tokenize(content.lower()))  # Lowercase for consistency
 
-# print(nltk.word_tokenize(content_example))
+    print('Total unique tokens:', len(tokens))
 
-tokens = []
-contents = list(news_sample['content'])
-# print(contents)
+    # Stopword removal
+    tokens_removed_stopwords = {w for w in tokens if w not in stop_words}
+    print('Unique tokens without stopwords:', len(tokens_removed_stopwords))
 
-for content in contents:
-    tokens = list(set(tokens + nltk.word_tokenize(content)))
+    # Stemming
+    tokens_stemmed = {stemmer.stem(token) for token in tokens_removed_stopwords}
+    print('Unique stemmed tokens:', len(tokens_stemmed))
 
-print('Number of tokens in all contents:', len(tokens))
+    # Reduction rates
+    def reduction_rate(original, transformed):
+        return (len(original) - len(transformed)) / len(original) * 100
 
-# Stopword removal:
+    print(f"Reduction after stopword removal: {reduction_rate(tokens, tokens_removed_stopwords):.2f}%")
+    print(f"Reduction after stopword removal + stemming: {reduction_rate(tokens, tokens_stemmed):.2f}%")
+    
+    print(tokens_stemmed)
+    return tokens_stemmed  # Return tokens for further processing if needed
 
-stopwords = stopwords.words('english')
-# print('Stopwords:', stopwords)
-
-tokens_removed_stopwords = [w for w in tokens if not w in stopwords]
-
-print('Number of tokens, without stopwords:', len(tokens_removed_stopwords))
-
-# Ratio:
-def reduction_rate(original, transformed):
-    return (len(original) - len(transformed)) / len(original)
-
-print('Reduction rate for stop words:', 
-      reduction_rate(tokens, tokens_removed_stopwords))
-
-from nltk.stem.porter import *
-stemmer = PorterStemmer()
-
-# plurals = ['dying', 'sleeping', 'walking', 'running', 'hello']
-# print([stemmer.stem(plural) for plural in plurals])
-
-tokens_stemmed = list(set([stemmer.stem(token) for token in tokens_removed_stopwords]))
-print('Number of unique stemmed tokens:', len(tokens_stemmed))
-
-print('Reduction rate for stopwords, and stemming:', 
-      reduction_rate(tokens, tokens_stemmed))
-
-
-
-
-
-
-
-
+# Read CSV in chunks
 filename = "C:/Users/victo/Downloads/995,000_rows.csv"
-chunk_size = 5000 #c o u l d f o r example be rea d i n chunks o f 5000 rows
+#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
+#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
+#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
 
-for chunk in pd.read_csv(filename,chunksize=chunk_size):
-    print( chunk ) # Apply n e c e s s a r y p r o c e s s i n g
+chunk_size = 9950
+chunk_counter = 1
+for chunk in pd.read_csv(filename, chunksize=chunk_size):
+    print(chunk_counter, "out of", 100, "chunks")
+    tokenizer(chunk)  # Process each chunk
+    chunk_counter += 1
+    
 
-#filename.close
