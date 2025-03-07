@@ -2,4 +2,4 @@ python==3.12.8
 matplotlib==13.10.0
 sckikit-learn==1.6.1
 pandas==2.2.3
-selenium===4.29.0selenium==4.29.0selenium==4.29.0
+selenium==4.29.0
