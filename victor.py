@@ -11,6 +11,7 @@ news_sample = pd.read_csv('clean_news_sample.csv')
 
 content_example = news_sample['content'].iloc[0]
 print('Number of tokens in content[0]:', len(content_example))
+
 # print(nltk.word_tokenize(content_example))
 
 tokens = []
