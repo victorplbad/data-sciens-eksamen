@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-matplotlib==13.10.0
-=======
 matplotlib==3.10.0
->>>>>>> 50ee4fcb557f323a504b3de57866960107a1bbb1
 sckikit-learn==1.6.1
 pandas==2.2.3
 selenium==4.29.0
