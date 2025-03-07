@@ -39,7 +39,10 @@ def tokenizer(df):
 
 # Read CSV in chunks
 filename = '995,000_rows.csv'
-chunk_size = 10000
-
+chunk_size = 9950
+chunk_counter = 1
 for chunk in pd.read_csv(filename, chunksize=chunk_size):
+    print(chunk_counter, "out of", 100, "chunks")
     tokenizer(chunk)  # Process each chunk
+    chunk_counter += 1
+    
