@@ -9,11 +9,11 @@ from sklearn.metrics import accuracy_score, f1_score
 
 
 # Load data frequent words
-freq_words = pd.read_csv(r"\frequent_words_clean_10k.csv")
+freq_words = pd.read_csv(r"C:\Users\45422\Documents\GitHub\data-sciens-eksamen\frequent_words_clean_10k.csv")
 frequent_words = set(freq_words['word'].astype(str).str.strip())
 
 # load articles dataset
-articles = pd.read_csv(r"\cleaned_995000_news.csv")
+articles = pd.read_csv(r"C:\Users\45422\Documents\cleaned_995000_news.csv")
 articles.columns = articles.columns.str.strip()
 articles['content'] = articles['content'].astype(str)
 
@@ -48,7 +48,7 @@ class NeuralNetwork(nn.Module):
         self.fc1 = nn.Linear(input_size, 512)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(512, 1)
+        self.fc2 = nn.Linear(256, 1)
         self.sigmoid = nn.Sigmoid()
 
         # How the data flows
@@ -70,7 +70,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.005, weight_decay=1e-5)
 # Batch = articles at a time
 batch_size = 128
 # Epochs = how many times the model will go though all training data (too many times = over fitting)
-epochs = 10
+epochs = 2
 
 for epoch in range(epochs):
     model.train()
