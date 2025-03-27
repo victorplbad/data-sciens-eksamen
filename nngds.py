@@ -10,11 +10,11 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 
 # Load data frequent words
-freq_words = pd.read_csv(r"src\frequent_words_clean_10k.csv")
+freq_words = pd.read_csv("src/frequent_words_10k.csv")
 frequent_words = set(freq_words['word'].astype(str).str.strip())
 
 # load articles dataset
-articles = pd.read_csv(r"src\cleaned_995000_news.csv")
+articles = pd.read_csv("path") #locally downloaded "/clean_995000_news.csv"
 articles.columns = articles.columns.str.strip()
 articles['content'] = articles['content'].astype(str)
 
@@ -128,7 +128,7 @@ with torch.no_grad():
 
 
 # Liars dataset test using the model form before
-liar_articles = pd.read_csv(r"src\clean_liar_test.csv")
+liar_articles = pd.read_csv("src/clean_liar_test.csv")
 liar_articles.columns = liar_articles.columns.str.strip()
 liar_articles['content'] = liar_articles['content'].astype(str)
 
