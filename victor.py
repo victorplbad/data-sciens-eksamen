@@ -1,54 +1,62 @@
-import pandas as pd
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
+from nltk.stem.porter import *
+import pandas as pd
+import re
 
-# Download stopwords if needed
-nltk.download('punkt')
 nltk.download('stopwords')
+nltk.download('punkt')
 
-# Tokenizer function
-def tokenizer(df):
-    stop_words = set(stopwords.words('english'))
-    stemmer = PorterStemmer()
 
-    tokens = set()
 
-    # Tokenizing each content
-    for content in df['content'].dropna():
-        tokens.update(nltk.word_tokenize(content.lower()))  # Lowercase for consistency
+df = pd.read_csv("test.tsv", usecols = [1, 2], sep='\t', header=None)
 
-    print('Total unique tokens:', len(tokens))
 
-    # Stopword removal
-    tokens_removed_stopwords = {w for w in tokens if w not in stop_words}
-    print('Unique tokens without stopwords:', len(tokens_removed_stopwords))
+#print(df)
 
-    # Stemming
-    tokens_stemmed = {stemmer.stem(token) for token in tokens_removed_stopwords}
-    print('Unique stemmed tokens:', len(tokens_stemmed))
+ 
+stopwords = stopwords.words('english')
 
-    # Reduction rates
-    def reduction_rate(original, transformed):
-        return (len(original) - len(transformed)) / len(original) * 100
+def full_clean(text: str, stopwords=stopwords):
+    text = text.lower()
 
-    print(f"Reduction after stopword removal: {reduction_rate(tokens, tokens_removed_stopwords):.2f}%")
-    print(f"Reduction after stopword removal + stemming: {reduction_rate(tokens, tokens_stemmed):.2f}%")
+    text = re.sub(r'\n', ' ', text) # Remove newlines
+    text = re.sub(r' +', ' ', text) # Remove multiple spaces
+
+    text = re.sub(r'([a-zA-Z]+) (\d+)[, ]? (\d{4})', '<DATE>', text) # Date substitution
+    text = re.sub(r'([.a-zA-Z0-9]+)@([-a-zA-Z0-9]+).([a-zA-Z]+)', '<EMAIL>', text) # E-Mail substitution
+    text = re.sub(r'(https?:\/\/)?(www.)?([-.a-zA-Z0-9]+)[.](co.uk|com|org|net)\/?([\%\-\.\?\_=a-zA-Z0-9\/]+)?', '<URL>', text) # URL substitution
+    text = re.sub(r'[0-9]+', '<NUM>', text) # Number substitution
+
+    stemmer = PorterStemmer()                                   # Porter Stemmer from nltk
+    tokens = nltk.word_tokenize(text)                           # Tokenizing the text
+    tokens = [word for word in tokens if word.isalpha()]        # Removing punctuation
+    tokens = [word for word in tokens if word not in stopwords] # Removing Stopwords
+    tokens = [stemmer.stem(word) for word in tokens]            # Stemming all the words
+    return ' '.join(tokens) # Returning a string consisting of each word in the list
+
+df[2] = df[2].apply(full_clean)
+#print(df)
+
+
+def is_credible(article_type):
+    if article_type in ['false', 'pants-fire', 'barely-true']:
+        return int(0)
     
-    print(tokens_stemmed)
-    return tokens_stemmed  # Return tokens for further processing if needed
-
-# Read CSV in chunks
-filename = "C:/Users/victo/Downloads/995,000_rows.csv"
-#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
-#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
-#filename = "C:/Users/victo/Downloads/995,000_rows.csv"
-
-chunk_size = 9950
-chunk_counter = 1
-for chunk in pd.read_csv(filename, chunksize=chunk_size):
-    print(chunk_counter, "out of", 100, "chunks")
-    tokenizer(chunk)  # Process each chunk
-    chunk_counter += 1
+    elif article_type in ['half-true', 'mostly-true', 'true']:
+        return int(1)
     
+    else:
+        return int(2)
+    
+df[1] = df[1].apply(is_credible)
 
+print(df)
+"""
+# Store Results
+
+# Save Cleaned Data
+df.to_csv("cleaned_995000_news.csv", index=False)
+
+# Display Sample Results
+print(df[["content"]].head(10)) """
