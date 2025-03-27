@@ -8,13 +8,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.metrics import classification_report, confusion_matrix
 
+# Ensuring reproducibility
+np.random.seed(0)
+torch.manual_seed(0)
 
 # Load data frequent words
 freq_words = pd.read_csv("src/frequent_words_10k.csv")
 frequent_words = set(freq_words['word'].astype(str).str.strip())
 
 # load articles dataset
-articles = pd.read_csv("path") #locally downloaded "/clean_995000_news.csv"
+articles = pd.read_csv(r"C:\Users\45422\Documents\cleaned_995000_news.csv") #locally downloaded "/clean_995000_news.csv"
 articles.columns = articles.columns.str.strip()
 articles['content'] = articles['content'].astype(str)
 
@@ -52,7 +55,7 @@ class NeuralNetwork(nn.Module):
         self.fc2 = nn.Linear(512, 1)
         self.sigmoid = nn.Sigmoid()
 
-        # How the data flows
+        # Feed forward, how the data flows
     def forward(self, x):
         x = self.dropout(self.relu(self.fc1(x)))
         x = self.sigmoid(self.fc2(x))
@@ -96,7 +99,7 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        train_loss += loss.item()
+        train_loss += loss.item()* X_batch_dense.size(0)
 
     # Validation
     model.eval()
@@ -115,6 +118,7 @@ with torch.no_grad():
     X_test_tensor = torch.tensor(X_test.toarray(), dtype=torch.float32)
     y_test_tensor = torch.tensor(y_test, dtype=torch.float32).view(-1, 1)
     
+    # Get predictions from lable
     y_pred_probs = model(X_test_tensor)
     y_pred_labels = (y_pred_probs >= 0.5).float()
 
