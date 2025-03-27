@@ -71,7 +71,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.005, weight_decay=1e-5)
 # Batch = articles at a time
 batch_size = 128
 # Epochs = how many times the model will go though all training data (too many times = over fitting)
-epochs = 2
+epochs = 10
 
 for epoch in range(epochs):
     model.train()
