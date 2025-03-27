@@ -7,15 +7,14 @@ import re
 nltk.download('stopwords')
 nltk.download('punkt')
 
-df = pd.read_csv("995,000_rows.csv", usecols = ["type", "content"])
-df = df.dropna()
 
-omit_types = ['unreliable', 'unknown', 'rumor', 
-              '2018-02-10 13:43:39.521661']
 
-for omit_type in omit_types:
-    df = df[df.type != omit_type]
+df = pd.read_csv("test.tsv", usecols = [1, 2], sep='\t', header=None)
 
+
+#print(df)
+
+ 
 stopwords = stopwords.words('english')
 
 def full_clean(text: str, stopwords=stopwords):
@@ -36,24 +35,28 @@ def full_clean(text: str, stopwords=stopwords):
     tokens = [stemmer.stem(word) for word in tokens]            # Stemming all the words
     return ' '.join(tokens) # Returning a string consisting of each word in the list
 
-df["content"] = df["content"].apply(full_clean)
+df[2] = df[2].apply(full_clean)
+#print(df)
+
 
 def is_credible(article_type):
-    if article_type in ['fake', 'satire', 'conspiracy', 'bias', 'hate', 'junksci']:
+    if article_type in ['false', 'pants-fire', 'barely-true']:
         return int(0)
     
-    elif article_type in ['clickbait', 'political', 'reliable']:
+    elif article_type in ['half-true', 'mostly-true', 'true']:
         return int(1)
     
     else:
         return int(2)
     
-df['type'] = df['type'].apply(is_credible)
+df[1] = df[1].apply(is_credible)
 
+print(df)
+"""
 # Store Results
 
 # Save Cleaned Data
 df.to_csv("cleaned_995000_news.csv", index=False)
 
 # Display Sample Results
-print(df[["content"]].head(10))
+print(df[["content"]].head(10)) """
