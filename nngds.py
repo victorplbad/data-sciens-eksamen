@@ -120,28 +120,29 @@ with torch.no_grad():
 
     accuracy = accuracy_score(y_test_tensor.numpy(), y_pred_labels.numpy())
     f1 = f1_score(y_test_tensor.numpy(), y_pred_labels.numpy())
-    
-    print(f'Test Accuracy: {accuracy:.4f} | f1 score: {f1:.4f}')
 
+    print(f'Test Accuracy: {accuracy:.4f} | f1 score: {f1:.4f}')
+    print(classification_report(y_test_tensor.numpy(), y_pred_labels.numpy()))
+    print(confusion_matrix(y_test_tensor.numpy(), y_pred_labels.numpy()))
 
 torch.save(model.state_dict(), "news_classifier_model.pth")
 
 
 # Liars dataset test using the model form before
-articles = pd.read_csv(r"C:\Users\45422\Documents\GitHub\data-sciens-eksamen\clean_liar_test.csv")
-articles.columns = articles.columns.str.strip()
-articles['2'] = articles['2'].astype(str)
+liar_articles = pd.read_csv(r"C:\Users\45422\Documents\GitHub\data-sciens-eksamen\clean_liar_test.csv")
+liar_articles.columns = liar_articles.columns.str.strip()
+liar_articles['content'] = liar_articles['content'].astype(str)
 
 #filter for 10000 most freq words
-articles['filtered_liar'] = articles['2'].apply(lambda x: filter_article(x, frequent_words))
+liar_articles['filtered_liar'] = liar_articles['content'].apply(lambda x: filter_article(x, frequent_words))
 # drop empty 
-articles = articles[articles['filtered_liar'].str.strip().astype(bool)].reset_index(drop=True)
+liar_articles = liar_articles[liar_articles['filtered_liar'].str.strip().astype(bool)].reset_index(drop=True)
 
 
 # TF-IDF vectorization  sparse, every article is a vector of the TF-IDF numerical values only non-zero
-X_sparse_liar = vectorizer.transform(articles['filtered_liar'])
+X_sparse_liar = vectorizer.transform(liar_articles['filtered_liar'])
 # label binary values
-y_liar = articles['1'].astype(int).values
+y_liar = liar_articles['type'].astype(int).values
 
 with torch.no_grad():
     X_liar_tensor = torch.tensor(X_sparse_liar.toarray(), dtype=torch.float32)
