@@ -6,6 +6,7 @@ import torch.optim as optim
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 # Load data frequent words
@@ -123,5 +124,35 @@ with torch.no_grad():
     print(f'Test Accuracy: {accuracy:.4f} | f1 score: {f1:.4f}')
 
 
+torch.save(model.state_dict(), "news_classifier_model.pth")
+
 
 # Liars dataset test using the model form before
+articles = pd.read_csv(r"C:\Users\45422\Documents\GitHub\data-sciens-eksamen\clean_liar_test.csv")
+articles.columns = articles.columns.str.strip()
+articles['2'] = articles['2'].astype(str)
+
+#filter for 10000 most freq words
+articles['filtered_liar'] = articles['2'].apply(lambda x: filter_article(x, frequent_words))
+# drop empty 
+articles = articles[articles['filtered_liar'].str.strip().astype(bool)].reset_index(drop=True)
+
+
+# TF-IDF vectorization  sparse, every article is a vector of the TF-IDF numerical values only non-zero
+X_sparse_liar = vectorizer.transform(articles['filtered_liar'])
+# label binary values
+y_liar = articles['1'].astype(int).values
+
+with torch.no_grad():
+    X_liar_tensor = torch.tensor(X_sparse_liar.toarray(), dtype=torch.float32)
+    y_liar_tensor = torch.tensor(y_liar, dtype=torch.float32).view(-1, 1)
+    
+    y_pred_probs_liar = model(X_liar_tensor)
+    y_pred_labels_liar = (y_pred_probs_liar >= 0.5).float()
+
+    accuracy_liar = accuracy_score(y_liar_tensor.numpy(), y_pred_labels_liar.numpy())
+    f1_liar = f1_score(y_liar_tensor.numpy(), y_pred_labels_liar.numpy())
+    
+    print(f'Test Accuracy: {accuracy_liar:.4f} | f1 score: {f1_liar:.4f}')
+    print(classification_report(y_liar_tensor.numpy(), y_pred_labels_liar.numpy()))
+    print(confusion_matrix(y_liar_tensor.numpy(), y_pred_labels_liar.numpy()))
