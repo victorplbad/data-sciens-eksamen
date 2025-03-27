@@ -48,7 +48,7 @@ class NeuralNetwork(nn.Module):
         self.fc1 = nn.Linear(input_size, 512)
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(256, 1)
+        self.fc2 = nn.Linear(512, 1)
         self.sigmoid = nn.Sigmoid()
 
         # How the data flows
@@ -121,3 +121,7 @@ with torch.no_grad():
     f1 = f1_score(y_test_tensor.numpy(), y_pred_labels.numpy())
     
     print(f'Test Accuracy: {accuracy:.4f} | f1 score: {f1:.4f}')
+
+
+
+# Liars dataset test using the model form before
