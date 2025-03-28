@@ -8,6 +8,7 @@
 ## Installation
 
 Download ```995,000_rows.csv``` from https://absalon.ku.dk/courses/80486/files/9275000?wrap=1
+
 Download ```liar_dataset.zip``` from https://www.cs.ucsb.edu/~william/data/liar_dataset.zip
 
 Clone the repo and install dependencies:
