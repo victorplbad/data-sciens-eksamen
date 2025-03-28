@@ -1,5 +1,20 @@
-to run the file from scrats you need the "995,000" newset : https://absalon.ku.dk/courses/80486/files/9275000?wrap= 
+## Table of Contents
 
-and liar data set from : https://www.cs.ucsb.edu/~william/data/liar_dataset.zip
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Contributing](#contributing)
+- [License](#license)
 
-downloade the pakkets in the requirements.txt
+---
+
+## Installation
+
+Clone the repo and install dependencies:
+
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+cd your-repo-name
+pip install -r requirements.txt
