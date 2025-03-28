@@ -22,6 +22,21 @@ pip install -r requirements.txt
 ## Usage
 The project as a whole has been compiled into a Jupyter notebook containing all the code and comments suitable for the operation.
 
+#### Data processing
+- Activate codeblock from Part 1 Task 1 to import pandas, nltk, re, stopwords and activate the two functions full_clean() and is_credible()
+- Activate codeblock from Part 1 Task 2 to apply the data processing suite to compile new file ```clean_995000_news.csv```
+- Use our data exploration suite to find informations on the processed data such as:
+- - Amount of reliabne and fake news.
+  - Frequency of words. Also creating new file ```frequent_words_10k.csv```
+  - Amount of URLs, Dates, Numbers and Emails.
+  - Draw a plot of the 10000 most frequent words.
+- Activate codeblock from Part 1 Task 4 which uses sklearns train_test_split to see how the data will get split up. 
+
+#### Simple logistic regression
+- Activate codeblock from Part 2 task 1. Logistic regression classifier to train a logistic regression model on ```clean_995000_news.csv```
+- - Using ```frequent_words_10k.csv```  as word frequency vector.
+- Apply preprocessing pipeline to our scraped reliable data.
+- - This data has been scraped under exercise 2 and we're applying our full_clean() function into the contents.
 ---
 
 
